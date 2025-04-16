@@ -36,6 +36,19 @@ def analyze():
         "twiml": str(response)
     })
 
+# Development test endpoint - will be disabled in production
+@app.route("/api/test-env")
+def test_env():
+    if os.getenv('FLASK_ENV') == 'development':
+        return jsonify({
+            "status": "ok",
+            "environment": os.getenv('FLASK_ENV'),
+            "twilio_configured": bool(os.getenv('TWILIO_ACCOUNT_SID') and 
+                                   os.getenv('TWILIO_AUTH_TOKEN') and 
+                                   os.getenv('TWILIO_PHONE_NUMBER'))
+        })
+    return jsonify({"status": "forbidden"}), 403
+
 # This is needed for Vercel
 @app.route("/")
 def home():
